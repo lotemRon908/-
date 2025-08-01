@@ -1,0 +1,82 @@
+{
+  "name": "gamecrfat-pro-ultimate",
+  "version": "1.0.0",
+  "description": "Revolutionary Game Development Environment - Making Game Creation Accessible to Everyone",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\" \"npm run ai-services:dev\"",
+    "build": "npm run frontend:build && npm run backend:build",
+    "start": "npm run backend:start",
+    "backend:dev": "cd backend && npm run dev",
+    "backend:build": "cd backend && npm run build",
+    "backend:start": "cd backend && npm start",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "ai-services:dev": "cd ai-services && npm run dev",
+    "sandbox:dev": "cd sandbox && npm run dev",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "setup": "npm install && npm run setup:backend && npm run setup:frontend && npm run setup:ai && npm run setup:sandbox",
+    "setup:backend": "cd backend && npm install",
+    "setup:frontend": "cd frontend && npm install",
+    "setup:ai": "cd ai-services && npm install",
+    "setup:sandbox": "cd sandbox && npm install",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "game-development",
+    "ai",
+    "visual-programming",
+    "no-code",
+    "game-engine",
+    "legal-protection",
+    "multi-platform",
+    "monetization"
+  ],
+  "author": "GameCraft Pro Ultimate Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "ai-services",
+    "sandbox",
+    "legal-engine",
+    "publishing",
+    "admin",
+    "shared"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gamecrfat-pro/ultimate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gamecrfat-pro/ultimate/issues"
+  },
+  "homepage": "https://gamecrfat-pro-ultimate.com"
+}

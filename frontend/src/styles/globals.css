@@ -1,0 +1,374 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables */
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #0ea5e9;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --background-color: #ffffff;
+  --surface-color: #f9fafb;
+  --text-color: #111827;
+  --border-color: #e5e7eb;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* Game-specific colors */
+  --gamecrfat-gold: #ffd700;
+  --gamecrfat-silver: #c0c0c0;
+  --gamecrfat-bronze: #cd7f32;
+  --gamecrfat-neon: #00ff41;
+  --gamecrfat-purple: #9d4edd;
+  --gamecrfat-cyan: #00ffff;
+}
+
+[data-theme="dark"] {
+  --background-color: #111827;
+  --surface-color: #1f2937;
+  --text-color: #f9fafb;
+  --border-color: #374151;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+  
+  /* Selection styles */
+  ::selection {
+    @apply bg-primary-200 text-primary-900;
+  }
+  
+  ::-moz-selection {
+    @apply bg-primary-200 text-primary-900;
+  }
+}
+
+/* Component Styles */
+@layer components {
+  /* Button variants */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-success {
+    @apply btn bg-success-600 text-white hover:bg-success-700 focus:ring-success-500 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-warning {
+    @apply btn bg-warning-600 text-white hover:bg-warning-700 focus:ring-warning-500 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-error {
+    @apply btn bg-error-600 text-white hover:bg-error-700 focus:ring-error-500 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-outline {
+    @apply btn border-2 border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 focus:ring-gray-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800;
+  }
+  
+  .btn-ghost {
+    @apply btn bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500 dark:text-gray-300 dark:hover:bg-gray-800;
+  }
+  
+  .btn-game {
+    @apply btn bg-gradient-to-r from-gamecrfat-purple to-gamecrfat-cyan text-white hover:from-gamecrfat-cyan hover:to-gamecrfat-purple focus:ring-gamecrfat-purple shadow-neon;
+  }
+  
+  /* Card styles */
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6;
+  }
+  
+  .card-hover {
+    @apply card transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  .card-game {
+    @apply card bg-gradient-to-br from-gray-900 to-gray-800 border-gamecrfat-neon/20 shadow-game;
+  }
+  
+  /* Input styles */
+  .input {
+    @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-primary-400 dark:focus:ring-primary-400;
+  }
+  
+  .input-error {
+    @apply input border-error-300 focus:border-error-500 focus:ring-error-500;
+  }
+  
+  /* Navigation styles */
+  .nav-link {
+    @apply flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200;
+  }
+  
+  .nav-link-active {
+    @apply nav-link bg-primary-100 text-primary-900 dark:bg-primary-900 dark:text-primary-100;
+  }
+  
+  .nav-link-inactive {
+    @apply nav-link text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100;
+  }
+  
+  /* Modal styles */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50;
+  }
+  
+  .modal-content {
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 max-h-[90vh] overflow-y-auto z-50;
+  }
+  
+  /* Game editor specific styles */
+  .editor-panel {
+    @apply bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4;
+  }
+  
+  .editor-toolbar {
+    @apply flex items-center space-x-2 p-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800;
+  }
+  
+  .editor-canvas {
+    @apply relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden;
+  }
+  
+  .game-object {
+    @apply absolute cursor-move border-2 border-transparent hover:border-primary-400 transition-all duration-200;
+  }
+  
+  .game-object-selected {
+    @apply game-object border-primary-500 shadow-lg;
+  }
+  
+  /* Drag and drop styles */
+  .droppable-area {
+    @apply border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 transition-colors duration-200;
+  }
+  
+  .droppable-area-active {
+    @apply droppable-area border-primary-400 bg-primary-50 dark:bg-primary-900/20;
+  }
+  
+  .draggable-item {
+    @apply cursor-grab transition-transform duration-200 hover:scale-105 active:scale-95;
+  }
+  
+  .dragging {
+    @apply opacity-50 cursor-grabbing;
+  }
+  
+  /* Loading states */
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-gray-300 border-t-primary-600;
+  }
+  
+  .loading-dots {
+    @apply inline-flex items-center;
+  }
+  
+  .loading-dots::after {
+    content: '';
+    @apply inline-block w-1 h-1 bg-current rounded-full ml-1 animate-pulse;
+    animation-delay: 0s;
+  }
+  
+  .loading-dots::before {
+    content: '';
+    @apply inline-block w-1 h-1 bg-current rounded-full mr-1 animate-pulse;
+    animation-delay: 0.2s;
+  }
+  
+  /* Syntax highlighting */
+  .code-editor {
+    @apply font-mono text-sm leading-relaxed;
+  }
+  
+  .code-line-number {
+    @apply text-gray-400 dark:text-gray-600 select-none pr-3 text-right;
+  }
+  
+  /* Game-specific animations */
+  .pixel-perfect {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+  
+  .glow-effect {
+    @apply relative;
+  }
+  
+  .glow-effect::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-gamecrfat-neon to-gamecrfat-cyan opacity-20 blur-xl -z-10;
+  }
+  
+  /* Notification styles */
+  .notification {
+    @apply fixed top-4 right-4 max-w-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50;
+  }
+  
+  .notification-success {
+    @apply notification border-l-4 border-l-success-500;
+  }
+  
+  .notification-error {
+    @apply notification border-l-4 border-l-error-500;
+  }
+  
+  .notification-warning {
+    @apply notification border-l-4 border-l-warning-500;
+  }
+  
+  .notification-info {
+    @apply notification border-l-4 border-l-primary-500;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+  }
+  
+  .text-game-gradient {
+    @apply bg-gradient-to-r from-gamecrfat-neon to-gamecrfat-purple bg-clip-text text-transparent;
+  }
+  
+  .bg-game-pattern {
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+  }
+  
+  .glass-effect {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+  
+  .glass-effect-dark {
+    @apply bg-black/10 backdrop-blur-md border border-white/10;
+  }
+  
+  .neon-border {
+    @apply border border-gamecrfat-neon shadow-[0_0_10px_rgba(0,255,65,0.5)];
+  }
+  
+  .cyber-grid {
+    background-image: 
+      linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .scale-hover {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes pulse-glow {
+    from {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    }
+    to {
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+    }
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-before: always;
+  }
+  
+  .print-break-inside {
+    page-break-inside: avoid;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn {
+    @apply border-2 border-current;
+  }
+  
+  .card {
+    @apply border-2 border-current;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

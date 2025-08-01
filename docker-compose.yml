@@ -1,0 +1,172 @@
+version: '3.8'
+
+services:
+  # Database
+  postgres:
+    image: postgres:15
+    container_name: gamecrfat-postgres
+    environment:
+      POSTGRES_DB: gamecrfat_pro
+      POSTGRES_USER: gamecrfat_user
+      POSTGRES_PASSWORD: secure_password_2024
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - gamecrfat-network
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: gamecrfat-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - gamecrfat-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gamecrfat-backend
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://gamecrfat_user:secure_password_2024@postgres:5432/gamecrfat_pro
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: super_secure_jwt_secret_2024
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      ADMIN_CODE: lotemronkaplan21
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./game-projects:/app/game-projects
+    networks:
+      - gamecrfat-network
+
+  # AI Services
+  ai-services:
+    build:
+      context: ./ai-services
+      dockerfile: Dockerfile
+    container_name: gamecrfat-ai
+    environment:
+      NODE_ENV: production
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      HUGGINGFACE_API_KEY: ${HUGGINGFACE_API_KEY}
+      STABILITY_AI_KEY: ${STABILITY_AI_KEY}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3002:3002"
+    depends_on:
+      - redis
+    networks:
+      - gamecrfat-network
+
+  # Code Sandbox
+  sandbox:
+    build:
+      context: ./sandbox
+      dockerfile: Dockerfile
+    container_name: gamecrfat-sandbox
+    environment:
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3003:3003"
+    depends_on:
+      - redis
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - gamecrfat-network
+
+  # Legal Engine
+  legal-engine:
+    build:
+      context: ./legal-engine
+      dockerfile: Dockerfile
+    container_name: gamecrfat-legal
+    environment:
+      NODE_ENV: production
+      LEGAL_API_KEY: ${LEGAL_API_KEY}
+      PATENT_API_KEY: ${PATENT_API_KEY}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3004:3004"
+    depends_on:
+      - redis
+    networks:
+      - gamecrfat-network
+
+  # Publishing Service
+  publishing:
+    build:
+      context: ./publishing
+      dockerfile: Dockerfile
+    container_name: gamecrfat-publishing
+    environment:
+      NODE_ENV: production
+      GOOGLE_PLAY_API_KEY: ${GOOGLE_PLAY_API_KEY}
+      APP_STORE_CONNECT_KEY: ${APP_STORE_CONNECT_KEY}
+      STEAM_API_KEY: ${STEAM_API_KEY}
+      NINTENDO_DEV_KEY: ${NINTENDO_DEV_KEY}
+    ports:
+      - "3005:3005"
+    networks:
+      - gamecrfat-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=http://localhost:3001
+        - REACT_APP_AI_SERVICE_URL=http://localhost:3002
+        - REACT_APP_SANDBOX_URL=http://localhost:3003
+    container_name: gamecrfat-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - gamecrfat-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: gamecrfat-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+      - ai-services
+      - sandbox
+      - legal-engine
+      - publishing
+    networks:
+      - gamecrfat-network
+
+volumes:
+  postgres_data:
+  uploads:
+  game-projects:
+
+networks:
+  gamecrfat-network:
+    driver: bridge
