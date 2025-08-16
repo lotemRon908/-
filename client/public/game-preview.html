@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            direction: rtl;
+        }
+        
+        .game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .game-title {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .game-map {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            line-height: 1;
+            text-align: center;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            white-space: pre;
+            direction: ltr;
+        }
+        
+        .game-info {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .hero-display {
+            font-size: 48px;
+            margin: 10px 0;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 6px;
+            text-align: center;
+            color: #64748b;
+        }
+        
+        .sprite-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .sprite-image {
+            max-width: 64px;
+            max-height: 64px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+        
+        .error-message {
+            text-align: center;
+            color: #ef4444;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .placeholder {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div id="gameContent">
+            <div class="placeholder">
+                🎮 טוען משחק...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadGame() {
+            try {
+                const gameData = localStorage.getItem('currentGame');
+                
+                if (!gameData) {
+                    document.getElementById('gameContent').innerHTML = `
+                        <div class="placeholder">
+                            🎯 אין משחק לתצוגה<br>
+                            <small>צור משחק חדש לראות אותו כאן</small>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const game = JSON.parse(gameData);
+                
+                let spriteSection = '';
+                if (game.sprite) {
+                    spriteSection = `
+                        <div class="sprite-container">
+                            <img src="${game.sprite}" alt="Game Sprite" class="sprite-image" />
+                        </div>
+                    `;
+                }
+
+                const gameHTML = `
+                    <div class="game-title">${game.title || 'משחק ללא שם'}</div>
+                    
+                    <div class="game-info">
+                        <div class="hero-display">${game.hero || '🤖'}</div>
+                        <div style="color: #64748b; margin: 5px 0;">דמות ראשית</div>
+                    </div>
+
+                    ${spriteSection}
+                    
+                    <div class="game-map">${(game.map || []).join('\n')}</div>
+                    
+                    <div class="controls">
+                        <strong>הוראות:</strong><br>
+                        משחק זה נוצר על ידי בינה מלאכותית<br>
+                        ${game.map && game.map.length > 0 ? 'ניתן לראות את מפת המשחק למעלה' : ''}
+                    </div>
+                `;
+
+                document.getElementById('gameContent').innerHTML = gameHTML;
+
+            } catch (error) {
+                console.error('Error loading game:', error);
+                document.getElementById('gameContent').innerHTML = `
+                    <div class="error-message">
+                        ❌ שגיאה בטעינת המשחק<br>
+                        <small>נסה ליצור משחק חדש</small>
+                    </div>
+                `;
+            }
+        }
+
+        // Load game on page load
+        window.addEventListener('load', loadGame);
+        
+        // Listen for storage changes to reload when new game is generated
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'currentGame') {
+                loadGame();
+            }
+        });
+        
+        // Also listen for direct updates from parent frame
+        window.addEventListener('message', function(e) {
+            if (e.data.type === 'reloadGame') {
+                loadGame();
+            }
+        });
+    </script>
+</body>
+</html>
